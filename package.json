@@ -1,0 +1,9 @@
+{
+  "name": "tiktok-auto-upload",
+  "version": "1.0.0",
+  "description": "TikTok Auto Uploader",
+  "main": "signer.js",
+  "dependencies": {
+    "crypto-js": "^4.2.0"
+  }
+} 

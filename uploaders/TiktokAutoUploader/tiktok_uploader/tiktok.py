@@ -206,9 +206,14 @@ def upload_video(session_user, video, title, schedule_time=0, allow_comment=1, a
 			if r.json()["status_msg"] == "You are posting too fast. Take a rest.":
 				print("[-] You are posting too fast, try later again")
 				return False
-			print(r.json())
-			uploaded = True
-			break
+			print("Response from TikTok:", r.text)
+			j = json.loads(r.text)
+			print("JSON response:", j)
+			if j["tasks"][0]["status_msg"] == "Y project task init" or j["tasks"][0]["status_msg"] == "Success":
+				print("[+] Video uploaded successfully.")
+				return True
+			print(f"[-] Video could not be uploaded: {j['tasks'][0]['status_msg']}")
+			return False
 		except Exception as e:
 			print("[-] Waiting for TikTok to process video...")
 			time.sleep(1.5)  # wait 1.5 seconds before asking again.

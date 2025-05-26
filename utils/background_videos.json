@@ -36,12 +36,6 @@
         "No Copyright Gameplay",
         "center"
     ],
-    "minecraft-2": [
-        "https://www.youtube.com/watch?v=Pt5_GSKIWQM",
-        "minecraft-2.mp4",
-        "Itslpsn",
-        "center"
-    ],
     "multiversus": [
         "https://www.youtube.com/watch?v=66oK1Mktz6g",
         "multiversus.mp4",
@@ -55,9 +49,27 @@
         "center"
     ],
     "steep": [
-        "https://www.youtube.com/watch?v=EnGiQrWBrko",
+        "https://www.youtube.com/watch?v=_AS5nu4u1ss",
         "steep.mp4",
         "joel",
+        "center"
+    ],
+    "4k": [
+        "https://www.youtube.com/watch?v=_AS5nu4u1ss",
+        "4k.mp4",
+        "bbswitzer",
+        "center"
+    ],
+    "4k-2": [
+        "https://www.youtube.com/watch?v=T6dCntaqHZ0",
+        "4k-2.mp4",
+        "bbswitzer",
+        "center"
+    ],
+    "4kcosmo": [
+        "https://www.youtube.com/watch?v=G5RpJwCJDqc",
+        "4kcosmo.mp4",
+        "bbswitzerr",
         "center"
     ]
 }

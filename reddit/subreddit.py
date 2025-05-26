@@ -78,7 +78,7 @@ def get_subreddit_threads(POST_ID: str):
     ):
         submission = reddit.submission(id=settings.config["reddit"]["thread"]["post_id"])
     elif settings.config["ai"]["ai_similarity_enabled"]:  # ai sorting based on comparison
-        threads = subreddit.hot(limit=50)
+        threads = subreddit.top(limit=50)
         keywords = settings.config["ai"]["ai_similarity_keywords"].split(",")
         keywords = [keyword.strip() for keyword in keywords]
         # Reformat the keywords for printing
@@ -89,7 +89,7 @@ def get_subreddit_threads(POST_ID: str):
             threads, subreddit, similarity_scores=similarity_scores
         )
     else:
-        threads = subreddit.hot(limit=25)
+        threads = subreddit.top(limit=25)
         submission = get_subreddit_undone(threads, subreddit)
 
     if submission is None:

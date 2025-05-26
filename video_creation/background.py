@@ -4,6 +4,8 @@ import re
 from pathlib import Path
 from random import randrange
 from typing import Any, Dict, Tuple
+import os
+import shutil
 
 import yt_dlp
 from moviepy.editor import AudioFileClip, VideoFileClip
@@ -74,26 +76,60 @@ def get_background_config(mode: str):
 
 
 def download_background_video(background_config: Tuple[str, str, str, Any]):
-    """Downloads the background/s video from YouTube."""
+    """Downloads the background/s video from YouTube or copies from local file."""
     Path("./assets/backgrounds/video/").mkdir(parents=True, exist_ok=True)
     # note: make sure the file name doesn't include an - in it
     uri, filename, credit, _ = background_config
-    if Path(f"assets/backgrounds/video/{credit}-{filename}").is_file():
+    output_path = f"assets/backgrounds/video/{credit}-{filename}"
+    
+    if Path(output_path).is_file():
+        print_substep("Background video already exists, skipping download...")
         return
+        
     print_step(
         "We need to download the backgrounds videos. they are fairly large but it's only done once. 😎"
     )
     print_substep("Downloading the backgrounds videos... please be patient 🙏 ")
-    print_substep(f"Downloading {filename} from {uri}")
-    ydl_opts = {
-        "format": "bestvideo[height<=1080][ext=mp4]",
-        "outtmpl": f"assets/backgrounds/video/{credit}-{filename}",
-        "retries": 10,
-    }
 
-    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-        ydl.download(uri)
-    print_substep("Background video downloaded successfully! 🎉", style="bold green")
+    if uri.startswith(("http://", "https://")):
+        # Handle YouTube URLs
+        print_substep(f"Downloading {filename} from {uri}")
+        ydl_opts = {
+            "format": "bestvideo[ext=mp4]+bestaudio[ext=m4a]/bestvideo+bestaudio/best",
+            "outtmpl": output_path,
+            "retries": 10,
+            "merge_output_format": "mp4",
+            "postprocessors": [{
+                "key": "FFmpegVideoConvertor",
+                "preferedformat": "mp4",
+            }],
+        }
+
+        try:
+            with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+                ydl.download([uri])
+            print_substep("Background video downloaded successfully! 🎉", style="bold green")
+        except Exception as e:
+            print_substep(f"Failed to download video: {str(e)}", "red")
+            print_substep("Trying alternative format...", "yellow")
+            
+            # Try with a simpler format selection
+            ydl_opts["format"] = "best[height<=1080]/best"
+            try:
+                with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+                    ydl.download([uri])
+                print_substep("Background video downloaded successfully with alternative format! 🎉", style="bold green")
+            except Exception as e:
+                print_substep(f"Failed to download video with alternative format: {str(e)}", "red")
+                raise
+    else:
+        # Handle local file
+        print_substep(f"Copying local video file from {uri}...")
+        if os.path.exists(uri):
+            shutil.copy2(uri, output_path)
+            print_substep("Background video copied successfully! 🎉", style="bold green")
+        else:
+            raise FileNotFoundError(f"Background video file not found at {uri}")
 
 
 def download_background_audio(background_config: Tuple[str, str, str]):

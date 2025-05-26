@@ -2,6 +2,9 @@ const { createCipheriv } = require("crypto");
 const { devices, chromium } = require("playwright-chromium");
 const Utils = require("./utils");
 const iPhone11 = devices["iPhone 11 Pro"];
+const axios = require('axios');
+const xbogus = require('../../X-Bogus/X-Bogus.js');
+
 class Signer {
   userAgent =
     "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.109 Safari/537.36";
@@ -115,22 +118,18 @@ class Signer {
     return info;
   }
   async sign(link) {
-    // generate valid verifyFp
-    let verify_fp = Utils.generateVerifyFp();
-    let newUrl = link + "&verifyFp=" + verify_fp;
-    let token = await this.page.evaluate(`generateSignature("${newUrl}")`);
-    let signed_url = newUrl + "&_signature=" + token;
-    let queryString = new URL(signed_url).searchParams.toString();
-    let bogus = await this.page.evaluate(`generateBogus("${queryString}","${this.userAgent}")`);
-    signed_url += "&X-Bogus=" + bogus;
-
-
+    // Use the local X-Bogus generator
+    const userAgent = this.userAgent;
+    const url = link;
+    const query = url.includes('?') ? url.split('?')[1] : '';
+    const xbogusSignature = xbogus.sign(query, userAgent);
+    const signed_url = url + (url.includes('?') ? '&' : '?') + 'X-Bogus=' + xbogusSignature;
     return {
-      signature: token,
-      verify_fp: verify_fp,
+      signature: '', // Not used
+      verify_fp: '', // Not used
       signed_url: signed_url,
-      "x-tt-params": this.xttparams(queryString),
-      "x-bogus": bogus,
+      'x-tt-params': '', // Not used
+      'x-bogus': xbogusSignature
     };
   }
 

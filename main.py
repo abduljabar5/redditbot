@@ -1,10 +1,12 @@
 #!/usr/bin/env python
 import math
 import sys
+import os
 from os import name
 from pathlib import Path
 from subprocess import Popen
 from typing import NoReturn
+import re
 
 from prawcore import ResponseException
 
@@ -24,6 +26,7 @@ from video_creation.background import (
 from video_creation.final_video import make_final_video
 from video_creation.screenshot_downloader import get_screenshots_of_reddit_posts
 from video_creation.voices import save_text_to_mp3
+import captionGen
 
 __VERSION__ = "3.3.0"
 
@@ -58,6 +61,22 @@ def main(POST_ID=None) -> None:
     download_background_audio(bg_config["audio"])
     chop_background(bg_config, length, reddit_object)
     make_final_video(number_of_comments, length, reddit_object, bg_config)
+    
+    # Add captions to the video
+    print_step("Adding captions to the video...")
+    subreddit = settings.config["reddit"]["thread"]["subreddit"]
+    title = reddit_object["thread_title"]
+    safe_title = re.sub(r"[^\w\s-]", "", title)  # Remove problematic characters
+    filename = f"{safe_title[:251]}"
+    input_video = f"results/{subreddit}/{filename}.mp4"
+    output_video = f"results/{subreddit}/{filename}_out.mp4"
+    font_path = os.path.join("fonts", "Rubik-Black.ttf")
+    
+    try:
+        captionGen.main(input_video, output_video, font_path)
+        print_substep("Captions added successfully! 🎉", style="bold green")
+    except Exception as e:
+        print_substep(f"Failed to add captions: {str(e)}", "red")
 
 
 def run_many(times) -> None:
@@ -66,7 +85,7 @@ def run_many(times) -> None:
             f'on the {x}{("th", "st", "nd", "rd", "th", "th", "th", "th", "th", "th")[x % 10]} iteration of {times}'
         )  # correct 1st 2nd 3rd 4th 5th....
         main()
-        Popen("cls" if name == "nt" else "clear", shell=True).wait()
+        # Popen("cls" if name == "nt" else "clear", shell=True).wait()
 
 
 def shutdown() -> NoReturn:
@@ -108,7 +127,7 @@ if __name__ == "__main__":
                     f'on the {index}{("st" if index % 10 == 1 else ("nd" if index % 10 == 2 else ("rd" if index % 10 == 3 else "th")))} post of {len(config["reddit"]["thread"]["post_id"].split("+"))}'
                 )
                 main(post_id)
-                Popen("cls" if name == "nt" else "clear", shell=True).wait()
+                # Popen("cls" if name == "nt" else "clear", shell=True).wait()
         elif config["settings"]["times_to_run"]:
             run_many(config["settings"]["times_to_run"])
         else:

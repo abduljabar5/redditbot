@@ -1,0 +1,16 @@
+{
+  "name": "tiktok-auto-uploader",
+  "version": "1.0.0",
+  "description": "TikTok Auto Uploader",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "axios": "^1.9.0",
+    "playwright-chromium": "^1.52.0",
+    "puppeteer": "^21.0.0",
+    "puppeteer-extra": "^3.3.6",
+    "puppeteer-extra-plugin-stealth": "^2.11.2"
+  }
+}
