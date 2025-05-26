@@ -257,6 +257,8 @@ package-lock.json
 
 # Vosk models
 vosk-model*/
+vosk-model-en-us-0.22/
+vosk-model-small-en-us-0.15/
 
 # Large media files
 *.mp4
@@ -271,6 +273,7 @@ temp/
 tmp/
 .temp/
 .tmp/
+temp_audio.wav
 
 # Cache directories
 .cache/
@@ -291,3 +294,10 @@ __pycache__/
 # Log files
 *.log
 logs/
+
+# Voice files
+GUI/voices/
+
+# Embedded git repositories
+uploaders/TikTok-AutoUpload/
+uploaders/TiktokAutoUploader/X-Bogus/
