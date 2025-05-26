@@ -250,3 +250,44 @@ config.toml
 # Exclude script_log and results directories
 script_log/
 results/
+
+# Node.js dependencies
+node_modules/
+package-lock.json
+
+# Vosk models
+vosk-model*/
+
+# Large media files
+*.mp4
+*.mp3
+*.wav
+*.avi
+*.mov
+*.mkv
+
+# Temporary files
+temp/
+tmp/
+.temp/
+.tmp/
+
+# Cache directories
+.cache/
+__pycache__/
+.pytest_cache/
+
+# Environment files
+.env
+.env.*
+*.env
+
+# IDE specific files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Log files
+*.log
+logs/
